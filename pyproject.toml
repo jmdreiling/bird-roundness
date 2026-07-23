@@ -1,0 +1,13 @@
+[project]
+name = "bird-roundness"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "cloudflare>=5.6.0",
+    "opencv-python>=5.0.0.93",
+    "requests>=2.34.2",
+    "selenium>=4.46.0",
+]
