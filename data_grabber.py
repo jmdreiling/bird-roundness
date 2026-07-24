@@ -1,4 +1,5 @@
 import requests
+import json
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
@@ -43,29 +44,44 @@ driver.get(link)
 ## Grab what images you can
 image_html_nodes = driver.find_elements(By.TAG_NAME, value ="img")
 
-SCROLL_PAUSE_TIME = 2 #How long to wait between scrolls
+SCROLL_PAUSE_TIME = 1 #How long to wait between scrolls
 
 ## Scroll until you reach the total number of images, I know this is 3038
 ## Could generate the 3038 dynamically but I'm fine with jankiness for now.
 ## Scroll code yoinked from: https://stackoverflow.com/questions/77790368/scraping-lazy-loading-images-with-selenium
 ## Specifically the answer by Clg9100
-while len(image_html_nodes) < 3038: ## stop when you hit the number of total images
+
+### LOAD ALL THE PHOTOS HERE
+
+total = 3038
+while len(image_html_nodes) < total: ## stop when you hit the number of total images
     driver.execute_script('window.scrollBy( 0, 4000 )' ) #Alternative scroll, a bit slower but reliable - increased from 400 to 4000 for more scrollll
     sleep(SCROLL_PAUSE_TIME) #Give images a bit of time to load by waiting
     image_html_nodes = driver.find_elements(By.TAG_NAME, value ="img") ## Grab the images that you see
     print(len(image_html_nodes)) ## print how many images you've gotten
 
-## We return here to the bright data code.
-image_urls =[]
-for image_html_node in image_html_nodes:
-  try:
-    # use the URL in the "src" as the default behavior
-    image_url = image_html_node.get_attribute("src")
-    image_urls.append(image_url)
-  except StaleElementReferenceException as e:
-    continue
-## Print your total number of URLS (this should be 3038)
+
+## Get Data and Images
+
+card_html_nodes = driver.find_elements(By.CLASS_NAME, value = "card")
+print(len(card_html_nodes))
+
+meta_dict = {}
+image_urls = []
+for card_html_node in card_html_nodes:
+    img = card_html_node.find_element(By.TAG_NAME, "img")
+    src_url = img.get_attribute("src")
+    image_urls.append(src_url)
+    id= src_url.split('/')[4]
+    info = card_html_node.find_element(By.CLASS_NAME, "info")
+    weight = info.find_element(By.CLASS_NAME, "weight").get_attribute("innerHTML")
+    time_date = info.find_elements(By.CLASS_NAME, "meta")[3].get_attribute("innerHTML")
+    meta_dict.update({id:{"weight": weight, "time_date":time_date}})
+
 print(len(image_urls))
+
+with open("meta_dict.json", "w") as file: 
+        json.dump(meta_dict, file)
 
 image_name_counter = 1
 
