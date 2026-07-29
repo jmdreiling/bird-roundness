@@ -10,6 +10,13 @@ dependencies = [
     "matplotlib>=3.11.1",
     "numpy>=2.5.1",
     "opencv-python>=5.0.0.93",
+    "pathlib>=1.0.1",
+    "pillow>=12.3.0",
+    "plotly>=6.9.0",
     "requests>=2.34.2",
+    "sam3>=0.0.1",
     "selenium>=4.46.0",
+    "torch>=2.13.0",
+    "torchvision>=0.28.0",
+    "transformers>=5.14.1",
 ]
