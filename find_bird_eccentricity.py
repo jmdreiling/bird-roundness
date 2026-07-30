@@ -8,14 +8,14 @@ list_images = sorted((p.glob('organized_data/day/*.jpg')))
 shortened_list = [str(l) for l in list_images[:10]]
 str_list =[str(l) for l in list_images]
 
+eccentricity_dict = {}
 with open('eccentricity_dict.json', 'r') as source:
-       json_dict = json.load(source)
+       eccentricity_dict = json.load(source)
 
-e_keys = json_dict.keys()
+e_keys = eccentricity_dict.keys()
 print(e_keys)
 subset= [entry for entry in str_list if entry not in e_keys]
 
-eccentricity_dict = {}
 
 for image in tqdm(subset):
     image_array, detections = grounded_segmentation(
